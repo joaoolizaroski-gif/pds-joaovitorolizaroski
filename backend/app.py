@@ -2,13 +2,11 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-
-# Configuração da base de dados SQLite via ORM
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///petshop.db"
 db = SQLAlchemy(app)
 
 # ==========================================
-# MODELOS (MAPEAMENTO OBJETO-RELACIONAL)
+# MODELOS
 # ==========================================
 
 class Dono(db.Model):
@@ -57,7 +55,10 @@ def buscar_dono(dono_id):
     dono = db.session.get(Dono, dono_id)
     if dono is None:
         return jsonify({"erro": "Dono nao encontrado"}), 404
-    return jsonify(dono.to_dict())
+    
+    dados = dono.to_dict()
+    dados["pets"] = [pet.to_dict() for pet in dono.pets]
+    return jsonify(dados)
 
 @app.route("/donos", methods=["POST"])
 def criar_dono():
@@ -95,11 +96,18 @@ def remover_dono(dono_id):
     db.session.commit()
     return jsonify({"mensagem": "Dono removido com sucesso"})
 
+# Rota criada na Aula 03 (Exercício 2):
+@app.route("/donos/<int:dono_id>/pets", methods=["GET"])
+def listar_pets_do_dono(dono_id):
+    dono = db.session.get(Dono, dono_id)
+    if dono is None:
+        return jsonify({"erro": "Dono nao encontrado"}), 404
+    return jsonify([pet.to_dict() for pet in dono.pets])
+
 # ==========================================
-# ROTAS DE PETS (EXERCÍCIOS DA AULA 02)
+# ROTAS DE PETS
 # ==========================================
 
-# 1. GET /pets e GET /pets?dono_id=X
 @app.route("/pets", methods=["GET"])
 def listar_pets():
     dono_id = request.args.get("dono_id")
@@ -113,7 +121,6 @@ def listar_pets():
         pets = Pet.query.all()
     return jsonify([pet.to_dict() for pet in pets])
 
-# 2. GET /pets/{id}
 @app.route("/pets/<int:pet_id>", methods=["GET"])
 def buscar_pet(pet_id):
     pet = db.session.get(Pet, pet_id)
@@ -121,14 +128,12 @@ def buscar_pet(pet_id):
         return jsonify({"erro": "Pet nao encontrado"}), 404
     return jsonify(pet.to_dict())
 
-# 3. POST /pets (com o Desafio de validar o dono_id)
 @app.route("/pets", methods=["POST"])
 def criar_pet():
     dados = request.json
     if not dados or "nome" not in dados or "especie" not in dados or "idade" not in dados or "dono_id" not in dados:
         return jsonify({"erro": "Informe nome, especie, idade e dono_id"}), 400
 
-    # Desafio: verificar se o dono_id existe no banco
     dono = db.session.get(Dono, dados["dono_id"])
     if dono is None:
         return jsonify({"erro": "Dono nao encontrado"}), 404
@@ -143,7 +148,6 @@ def criar_pet():
     db.session.commit()
     return jsonify(novo_pet.to_dict()), 201
 
-# 4. PUT /pets/{id}
 @app.route("/pets/<int:pet_id>", methods=["PUT"])
 def atualizar_pet(pet_id):
     pet = db.session.get(Pet, pet_id)
@@ -154,7 +158,6 @@ def atualizar_pet(pet_id):
     if not dados or "nome" not in dados or "especie" not in dados or "idade" not in dados or "dono_id" not in dados:
         return jsonify({"erro": "Informe nome, especie, idade e dono_id"}), 400
 
-    # Desafio: verificar se o novo dono_id existe
     dono = db.session.get(Dono, dados["dono_id"])
     if dono is None:
         return jsonify({"erro": "Dono nao encontrado"}), 404
@@ -167,7 +170,6 @@ def atualizar_pet(pet_id):
     db.session.commit()
     return jsonify(pet.to_dict())
 
-# 5. DELETE /pets/{id}
 @app.route("/pets/<int:pet_id>", methods=["DELETE"])
 def remover_pet(pet_id):
     pet = db.session.get(Pet, pet_id)

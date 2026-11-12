@@ -65,3 +65,14 @@ Content-Type: application/json
 
 ### Remover um pet
 DELETE http://localhost:5000/pets/5
+
+### Aula 3
+
+### Teste 1: Listar pets de um dono existente
+GET http://localhost:5000/donos/1/pets
+
+### Teste 2: Listar pets de um dono que não existe (deve retornar 404)
+GET http://localhost:5000/donos/999/pets
+
+### Teste 3: Buscar dono trazendo a lista de pets embutida
+GET http://localhost:5000/donos/1
