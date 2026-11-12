@@ -76,3 +76,49 @@ GET http://localhost:5000/donos/999/pets
 
 ### Teste 3: Buscar dono trazendo a lista de pets embutida
 GET http://localhost:5000/donos/1
+
+### Aula 5
+
+### Teste 1: Idade em texto (deve falhar com 400)
+POST http://localhost:5000/pets
+Content-Type: application/json
+
+{
+  "nome": "Rex",
+  "especie": "cao",
+  "idade": "dois",
+  "dono_id": 1
+}
+
+### Teste 2: Idade negativa (deve falhar com 400)
+POST http://localhost:5000/pets
+Content-Type: application/json
+
+{
+  "nome": "Rex",
+  "especie": "cao",
+  "idade": -5,
+  "dono_id": 1
+}
+
+### Teste 3: Dono inexistente (deve falhar com 400)
+POST http://localhost:5000/pets
+Content-Type: application/json
+
+{
+  "nome": "Rex",
+  "especie": "cao",
+  "idade": 3,
+  "dono_id": 999
+}
+
+### Teste 4: Nome vazio (deve falhar com 400)
+POST http://localhost:5000/pets
+Content-Type: application/json
+
+{
+  "nome": "   ",
+  "especie": "gato",
+  "idade": 2,
+  "dono_id": 1
+}
