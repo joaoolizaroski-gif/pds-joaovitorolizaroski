@@ -12,8 +12,6 @@ def conectar():
 
 # ---------------------------------------------------------------
 # ROTAS DE DONOS - CODIGO DE REFERENCIA
-# Estas rotas ja estao prontas. Use elas como modelo para escrever
-# as rotas de pets mais abaixo.
 # ---------------------------------------------------------------
 
 
@@ -130,21 +128,7 @@ def remover_dono(dono_id):
 
 
 # ---------------------------------------------------------------
-# ROTAS DE PETS - SUA PARTE
-#
-# Escreva abaixo as rotas de pets seguindo o mesmo padrao usado
-# nas rotas de donos. O contrato de cada rota (URL, metodo, corpo
-# da requisicao e resposta esperada) esta no README.md.
-#
-# 1. GET    /pets              lista todos os pets com o nome do dono
-# 2. GET    /pets/<id>         busca um pet pelo id
-# 3. POST   /pets              cadastra um novo pet
-# 4. PUT    /pets/<id>         atualiza um pet
-# 5. DELETE /pets/<id>         remove um pet
-#
-# Atencao nas duas rotas que valem ponto extra de atencao:
-# - o GET /pets precisa usar JOIN para trazer o nome do dono
-# - o GET /pets aceita o filtro opcional ?dono_id=
+# ROTAS DE PETS 
 # ---------------------------------------------------------------
 
 @app.route("/pets", methods=["GET"])
