@@ -16,3 +16,4 @@ dist/
 # Editor e sistema
 .vscode/
 .DS_Store
+instance/
